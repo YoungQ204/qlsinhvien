@@ -1,0 +1,52 @@
+<div class="khoa-management">
+  <div class="khoa-header">
+    <h2>Quản lý Khoa</h2>
+    <div class="header-actions">
+      <div class="search-box">
+        <input type="text" id="searchKhoa" placeholder="Tìm kiếm theo mã hoặc tên khoa...">
+        <i class='bx bx-search'></i>
+      </div>
+      <button class="btn-add" onclick="openKhoaModal()">
+        <i class='bx bx-plus'></i> Thêm Khoa
+      </button>
+    </div>
+  </div>
+
+  <table class="data-table" id="khoaTable">
+    <thead>
+      <tr>
+        <th>Mã khoa</th>
+        <th>Tên khoa</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+</div>
+
+<div id="khoaModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalTitle">Thêm Khoa</h3>
+      <span class="close" onclick="closeKhoaModal()"><i class='bx bx-x'></i></span>
+    </div>
+    <form id="khoaForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="maKhoa">Mã Khoa</label>
+          <input type="text" id="maKhoa" required>
+        </div>
+        <div class="form-group">
+          <label for="tenKhoa">Tên Khoa</label>
+          <input type="text" id="tenKhoa" required>
+        </div>
+        <input type="hidden" id="editingRowIndex">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" onclick="closeKhoaModal()">Hủy</button>
+        <button type="submit" class="btn-save">Lưu</button>
+      </div>
+    </form>
+  </div>
+</div>

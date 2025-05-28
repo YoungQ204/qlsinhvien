@@ -1,0 +1,52 @@
+<div class="class-management">
+    <div class="class-header">
+        <h2>Quản lý Lớp</h2>
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="text" id="searchClass" placeholder="Tìm kiếm theo mã hoặc tên lớp...">
+                <i class='bx bx-search'></i>
+            </div>
+            <button class="btn-add" onclick="openClassModal()">
+                <i class='bx bx-plus'></i> Thêm Lớp
+            </button>
+        </div>
+    </div>
+
+    <table class="data-table" id="classTable">
+        <thead>
+            <tr>
+                <th>Mã lớp</th>
+                <th>Tên lớp</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
+
+<div id="classModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="classModalTitle">Thêm Lớp</h3>
+            <span class="close" onclick="closeClassModal()"><i class='bx bx-x'></i></span>
+        </div>
+        <form id="classForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="maClass">Mã Lớp</label>
+                    <input type="text" id="maClass" required>
+                </div>
+                <div class="form-group">
+                    <label for="tenClass">Tên Lớp</label>
+                    <input type="text" id="tenClass" required>
+                </div>
+                <input type="hidden" id="editingClassRowIndex">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeClassModal()">Hủy</button>
+                <button type="submit" class="btn-save">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,102 @@
+<div class="student-management">
+    <div class="student-header">
+        <h2>Quản lý Sinh viên</h2>
+        <div class="header-actions">
+            <div class="search-box">
+                <input type="text" id="searchStudent" placeholder="Tìm kiếm theo mã, tên sinh viên...">
+                <i class='bx bx-search'></i>
+            </div>
+            <button class="btn-add" onclick="openStudentModal()">
+                <i class='bx bx-plus'></i> Thêm Sinh viên
+            </button>
+        </div>
+    </div>
+
+    <table class="data-table" id="studentTable">
+        <thead>
+            <tr>
+                <th>Mã SV</th>
+                <th>Tên SV</th>
+                <th>Ngày sinh</th>
+                <th>Giới tính</th>
+                <th>Khoa</th>
+                <th>Lớp</th>
+                <th>Email</th>
+                <th>SĐT</th>
+                <th>Địa chỉ</th>
+                <th>Ảnh</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+    </table>
+</div>
+
+<div id="studentModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="studentModalTitle">Thêm Sinh viên</h3>
+            <span class="close" onclick="closeStudentModal()"><i class='bx bx-x'></i></span>
+        </div>
+        <form id="studentForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="maSV">Mã Sinh viên</label>
+                    <input type="text" id="maSV" required>
+                </div>
+                <div class="form-group">
+                    <label for="tenSV">Tên Sinh viên</label>
+                    <input type="text" id="tenSV" required>
+                </div>
+                <div class="form-group">
+                    <label for="ngaySinh">Ngày sinh</label>
+                    <input type="date" id="ngaySinh" required>
+                </div>
+                <div class="form-group">
+                    <label>Giới tính</label>
+                    <div>
+                        <input type="radio" id="gioiTinhNam" name="gioiTinh" value="Nam" required>
+                        <label for="gioiTinhNam" class="radio-label">Nam</label>
+                        <input type="radio" id="gioiTinhNu" name="gioiTinh" value="Nữ">
+                        <label for="gioiTinhNu" class="radio-label">Nữ</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="khoaSV">Khoa</label>
+                    <select id="khoaSV" required>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label for="lopSV">Lớp</label>
+                    <select id="lopSV" required>
+                        </select>
+                </div>
+                <div class="form-group">
+                    <label for="emailSV">Email</label>
+                    <input type="email" id="emailSV" required>
+                </div>
+                <div class="form-group">
+                    <label for="sdtSV">Số điện thoại</label>
+                    <input type="tel" id="sdtSV" pattern="[0-9]{10,11}" placeholder="VD: 0123456789" required>
+                </div>
+                <div class="form-group">
+                    <label for="diaChiSV">Địa chỉ</label>
+                    <input type="text" id="diaChiSV" required>
+                </div>
+                <div class="form-group">
+                    <label for="anhSV">Ảnh đại diện</label>
+                    <input type="file" id="anhSV" accept="/img/OIP.jpg">
+                    <div id="imagePreview" style="margin-top: 10px; text-align: center;">
+                        <img src="" alt="Ảnh đại diện" style="max-width: 100px; max-height: 100px; border-radius: 5px; display: none;">
+                    </div>
+                </div>
+                <input type="hidden" id="editingStudentRowIndex">
+                <input type="hidden" id="currentStudentImage"> </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeStudentModal()">Hủy</button>
+                <button type="submit" class="btn-save">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
