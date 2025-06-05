@@ -562,99 +562,342 @@ function initClassManagement() {
     renderClassTable();
 }
 
-// --- Quản lý Sinh viên ---
-function initStudentManagement() {
-    console.log("Đang khởi tạo quản lý sinh viên...");
+    // --- Quản lý Sinh viên ---
+    function initStudentManagement() {
+        console.log("Đang khởi tạo quản lý sinh viên...");
 
-    // Dữ liệu mẫu ban đầu cho sinh viên
-    let studentData = JSON.parse(localStorage.getItem('studentData')) || [
-        {
-            maSV: '671800', tenSV: 'Nguyễn Thế Hiển', ngaySinh: '23/08/2004', gioiTinh: 'Nam',
-            khoaSV: 'CNTT', lopSV: 'CNTTA', emailSV: 'nguyenthehien00@gmail.com', sdtSV: '0987654321',
-            diaChiSV: 'Bắc Ninh', anhSV: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' // Ảnh mặc định nhỏ
-        },
-        {
-            maSV: '671801', tenSV: 'Tạ Hữu Quân', ngaySinh: '26/08/2004', gioiTinh: 'Nam',
-            khoaSV: 'CNTT', lopSV: 'CNTTC', emailSV: 'tahuuquan01@gmai.com', sdtSV: '0912345678',
-            diaChiSV: 'Bắc Ninh', anhSV: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+        // Dữ liệu mẫu ban đầu cho sinh viên
+        let studentData = JSON.parse(localStorage.getItem('studentData')) || [
+            {
+                maSV: '671800', tenSV: 'Nguyễn Thế Hiển', ngaySinh: '23/08/2004', gioiTinh: 'Nam',
+                khoaSV: 'CNTT', lopSV: 'CNTTA', emailSV: 'nguyenthehien00@gmail.com', sdtSV: '0987654321',
+                diaChiSV: 'Bắc Ninh', anhSV: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' // Ảnh mặc định nhỏ
+            },
+            {
+                maSV: '671801', tenSV: 'Tạ Hữu Quân', ngaySinh: '26/08/2004', gioiTinh: 'Nam',
+                khoaSV: 'CNTT', lopSV: 'CNTTC', emailSV: 'tahuuquan01@gmai.com', sdtSV: '0912345678',
+                diaChiSV: 'Bắc Ninh', anhSV: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII='
+            }
+        ];
+
+        // Dữ liệu khoa và lớp để điền vào dropdown (lấy từ localStorage)
+        const khoaOptions = JSON.parse(localStorage.getItem('khoaData')) || [];
+        const lopOptions = JSON.parse(localStorage.getItem('classData')) || [];
+
+        // Hàm lưu dữ liệu sinh viên vào localStorage
+        function saveStudentData() {
+            localStorage.setItem('studentData', JSON.stringify(studentData));
+            console.log("Đã lưu dữ liệu sinh viên.");
         }
+
+        // Hàm điền dữ liệu vào dropdown Khoa và Lớp trong modal
+        function populateSelects() {
+            const khoaSelect = document.getElementById('khoaSV');
+            const lopSelect = document.getElementById('lopSV');
+
+            if (khoaSelect) {
+                khoaSelect.innerHTML = '<option value="">-- Chọn Khoa --</option>';
+                khoaOptions.forEach(khoa => {
+                    const option = document.createElement('option');
+                    option.value = khoa.maKhoa;
+                    option.textContent = khoa.tenKhoa;
+                    khoaSelect.appendChild(option);
+                });
+            }
+            if (lopSelect) {
+                lopSelect.innerHTML = '<option value="">-- Chọn Lớp --</option>';
+                lopOptions.forEach(lop => {
+                    const option = document.createElement('option');
+                    option.value = lop.maClass;
+                    option.textContent = lop.tenClass;
+                    lopSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Hàm render (hiển thị) bảng sinh viên
+        function renderStudentTable(data = studentData) {
+            console.log("Đang render bảng sinh viên với dữ liệu:", data);
+            const tbody = document.querySelector('#studentTable tbody');
+            if (!tbody) {
+                console.error("Không tìm thấy tbody của bảng sinh viên.");
+                return;
+            }
+
+            tbody.innerHTML = ''; // Xóa các hàng cũ
+
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="11" style="text-align: center;">Không tìm thấy kết quả phù hợp</td></tr>`;
+                return;
+            }
+
+            data.forEach((sinhVien) => {
+                const originalIndex = studentData.findIndex(sv => sv.maSV === sinhVien.maSV); // Tìm index gốc
+                const row = document.createElement('tr');
+
+                // Hiển thị ảnh hoặc ảnh placeholder nếu không có
+                const imgSrc = sinhVien.anhSV && sinhVien.anhSV !== '' ? sinhVien.anhSV : '../img/OIP.jpg'; // Thay 'placeholder.png' bằng ảnh mặc định của bạn
+
+                row.innerHTML = `
+                    <td>${sinhVien.maSV}</td>
+                    <td>${sinhVien.tenSV}</td>
+                    <td>${sinhVien.ngaySinh}</td>
+                    <td>${sinhVien.gioiTinh}</td>
+                    <td>${sinhVien.khoaSV}</td>
+                    <td>${sinhVien.lopSV}</td>
+                    <td>${sinhVien.emailSV}</td>
+                    <td>${sinhVien.sdtSV}</td>
+                    <td>${sinhVien.diaChiSV}</td>
+                    <td><img src="${imgSrc}" alt="Ảnh SV" class="student-avatar"></td>
+                    <td>
+                        <button class="action-btn btn-edit" data-index="${originalIndex}" onclick="openStudentModal(true, ${originalIndex})">
+                            <i class="bx bx-edit"></i> Sửa
+                        </button>
+                        <button class="action-btn btn-delete" data-index="${originalIndex}" onclick="deleteStudent(${originalIndex})">
+                            <i class="bx bx-trash-alt"></i> Xóa
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Xử lý tìm kiếm sinh viên
+        const searchInput = document.getElementById('searchStudent');
+        if (searchInput) {
+            console.log("Đã tìm thấy ô tìm kiếm sinh viên.");
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase().trim();
+                console.log("Đang tìm kiếm sinh viên với từ khoá:", searchTerm);
+
+                if (!searchTerm) {
+                    renderStudentTable();
+                    return;
+                }
+
+                const filteredData = studentData.filter(sv =>
+                    sv.maSV.toLowerCase().includes(searchTerm) ||
+                    sv.tenSV.toLowerCase().includes(searchTerm) ||
+                    sv.khoaSV.toLowerCase().includes(searchTerm) ||
+                    sv.lopSV.toLowerCase().includes(searchTerm) ||
+                    sv.emailSV.toLowerCase().includes(searchTerm) ||
+                    sv.sdtSV.toLowerCase().includes(searchTerm) ||
+                    sv.diaChiSV.toLowerCase().includes(searchTerm)
+                );
+                console.log("Kết quả tìm kiếm sinh viên:", filteredData);
+                renderStudentTable(filteredData);
+            });
+        } else {
+            console.error("Không tìm thấy phần tử #searchStudent.");
+        }
+
+        // Xử lý xem trước ảnh khi chọn file
+        const anhSVInput = document.getElementById('anhSV');
+        const imagePreview = document.querySelector('#imagePreview img');
+        if (anhSVInput && imagePreview) {
+            anhSVInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file); // Chuyển ảnh thành base64
+                } else {
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                }
+            });
+        }
+
+        // Hàm mở modal thêm/sửa sinh viên
+        window.openStudentModal = function(isEdit = false, index = -1) {
+            console.log(`Mở modal sinh viên ${isEdit ? 'sửa' : 'thêm'} với index:`, index);
+            const modal = document.getElementById('studentModal');
+            if (!modal) {
+                console.error("Không tìm thấy modal sinh viên.");
+                return;
+            }
+
+            document.getElementById('studentModalTitle').textContent = isEdit ? 'Sửa Sinh viên' : 'Thêm Sinh viên';
+            populateSelects(); // Điền lại dropdown khoa/lớp mỗi khi mở modal
+
+            const anhSVInput = document.getElementById('anhSV');
+            const imagePreview = document.querySelector('#imagePreview img');
+            const currentStudentImage = document.getElementById('currentStudentImage');
+
+            if (isEdit && index >= 0 && index < studentData.length) {
+                const sv = studentData[index];
+                document.getElementById('maSV').value = sv.maSV;
+                document.getElementById('tenSV').value = sv.tenSV;
+                document.getElementById('ngaySinh').value = sv.ngaySinh;
+                document.querySelector(`input[name="gioiTinh"][value="${sv.gioiTinh}"]`).checked = true;
+                document.getElementById('khoaSV').value = sv.khoaSV;
+                document.getElementById('lopSV').value = sv.lopSV;
+                document.getElementById('emailSV').value = sv.emailSV;
+                document.getElementById('sdtSV').value = sv.sdtSV;
+                document.getElementById('diaChiSV').value = sv.diaChiSV;
+                document.getElementById('editingStudentRowIndex').value = index;
+
+                // Hiển thị ảnh hiện có
+                if (sv.anhSV) {
+                    imagePreview.src = sv.anhSV;
+                    imagePreview.style.display = 'block';
+                    currentStudentImage.value = sv.anhSV; // Lưu ảnh hiện tại
+                } else {
+                    imagePreview.src = '';
+                    imagePreview.style.display = 'none';
+                    currentStudentImage.value = '';
+                }
+            } else {
+                // Reset form nếu là chế độ thêm mới
+                document.getElementById('studentForm').reset();
+                document.getElementById('editingStudentRowIndex').value = '';
+                imagePreview.src = '';
+                imagePreview.style.display = 'none';
+                currentStudentImage.value = '';
+            }
+
+            modal.style.display = 'flex'; // Hiển thị modal
+        };
+
+        // Hàm đóng modal sinh viên
+        window.closeStudentModal = function() {
+            const modal = document.getElementById('studentModal');
+            if (modal) modal.style.display = 'none';
+            // Reset preview ảnh khi đóng modal
+            document.querySelector('#imagePreview img').src = '';
+            document.querySelector('#imagePreview img').style.display = 'none';
+        };
+
+        // Đóng modal khi click ra ngoài nội dung modal
+        document.getElementById('studentModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeStudentModal();
+            }
+        });
+
+        // Hàm xóa sinh viên
+        window.deleteStudent = function(index) {
+            console.log("Click xóa sinh viên có index:", index);
+            if (confirm("Bạn có chắc muốn xóa sinh viên này?")) {
+                studentData.splice(index, 1); // Xóa phần tử tại index
+                saveStudentData(); // Lưu lại dữ liệu
+                renderStudentTable(); // Render lại bảng
+            }
+        };
+
+        // Xử lý submit form thêm/sửa sinh viên
+        const form = document.getElementById('studentForm');
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault(); // Ngăn chặn form submit mặc định
+
+                const maSV = document.getElementById('maSV').value.trim();
+                const tenSV = document.getElementById('tenSV').value.trim();
+                const ngaySinh = document.getElementById('ngaySinh').value;
+                const gioiTinh = document.querySelector('input[name="gioiTinh"]:checked')?.value || '';
+                const khoaSV = document.getElementById('khoaSV').value;
+                const lopSV = document.getElementById('lopSV').value;
+                const emailSV = document.getElementById('emailSV').value.trim();
+                const sdtSV = document.getElementById('sdtSV').value.trim();
+                const diaChiSV = document.getElementById('diaChiSV').value.trim();
+                const anhSVInput = document.getElementById('anhSV');
+                const editingStudentRowIndex = document.getElementById('editingStudentRowIndex').value;
+                const currentStudentImage = document.getElementById('currentStudentImage').value; // Ảnh đang có (base64)
+
+                console.log(`Submit form SV: ${maSV}, ${tenSV}, index: ${editingStudentRowIndex}`);
+
+                if (!maSV || !tenSV || !ngaySinh || !gioiTinh || !khoaSV || !lopSV || !emailSV || !sdtSV || !diaChiSV) {
+                    alert('Vui lòng nhập đầy đủ thông tin và chọn Khoa/Lớp.');
+                    return;
+                }
+
+                let newImageBase64 = currentStudentImage; // Mặc định giữ ảnh cũ
+                if (anhSVInput.files.length > 0) {
+                    // Nếu có file ảnh mới được chọn, đọc nó
+                    newImageBase64 = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (event) => resolve(event.target.result);
+                        reader.readAsDataURL(anhSVInput.files[0]);
+                    });
+                }
+
+
+                // Kiểm tra mã sinh viên trùng lặp khi thêm mới
+                if (editingStudentRowIndex === '' && studentData.some(sv => sv.maSV === maSV)) {
+                    alert('Mã sinh viên đã tồn tại.');
+                    return;
+                }
+
+                const newStudent = {
+                    maSV, tenSV, ngaySinh, gioiTinh, khoaSV, lopSV, emailSV, sdtSV, diaChiSV, anhSV: newImageBase64
+                };
+
+                if (editingStudentRowIndex !== '') {
+                    // Chế độ sửa: cập nhật dữ liệu tại index
+                    studentData[editingStudentRowIndex] = newStudent;
+                } else {
+                    // Chế độ thêm mới: thêm vào cuối mảng
+                    studentData.push(newStudent);
+                }
+
+                saveStudentData(); // Lưu dữ liệu mới
+                renderStudentTable(); // Render lại bảng
+                closeStudentModal(); // Đóng modal
+            });
+        } else {
+            console.error("Không tìm thấy form sinh viên.");
+        }
+
+        // Khởi tạo ban đầu: Render bảng sinh viên khi hàm được gọi
+        renderStudentTable();   
+    }
+    
+//Quản lý môn học
+function initSubjectManagement() {
+    console.log("Khởi tạo quản lý môn học...");
+
+    // Dữ liệu mẫu ban đầu
+    let subjectData = JSON.parse(localStorage.getItem('subjectData')) || [
+        { maMonHoc: 'MATH101', tenMonHoc: 'Toán cao cấp', soTinChi: 3 },
+        { maMonHoc: 'PHYS101', tenMonHoc: 'Vật lý đại cương', soTinChi: 4 },
+        { maMonHoc: 'PROG101', tenMonHoc: 'Lập trình cơ bản', soTinChi: 3 }
     ];
 
-    // Dữ liệu khoa và lớp để điền vào dropdown (lấy từ localStorage)
-    const khoaOptions = JSON.parse(localStorage.getItem('khoaData')) || [];
-    const lopOptions = JSON.parse(localStorage.getItem('classData')) || [];
-
-    // Hàm lưu dữ liệu sinh viên vào localStorage
-    function saveStudentData() {
-        localStorage.setItem('studentData', JSON.stringify(studentData));
-        console.log("Đã lưu dữ liệu sinh viên.");
+    // Lưu vào localStorage
+    function saveSubjectData() {
+        localStorage.setItem('subjectData', JSON.stringify(subjectData));
+        console.log("Đã lưu dữ liệu môn học");
     }
 
-    // Hàm điền dữ liệu vào dropdown Khoa và Lớp trong modal
-    function populateSelects() {
-        const khoaSelect = document.getElementById('khoaSV');
-        const lopSelect = document.getElementById('lopSV');
-
-        if (khoaSelect) {
-            khoaSelect.innerHTML = '<option value="">-- Chọn Khoa --</option>';
-            khoaOptions.forEach(khoa => {
-                const option = document.createElement('option');
-                option.value = khoa.maKhoa;
-                option.textContent = khoa.tenKhoa;
-                khoaSelect.appendChild(option);
-            });
-        }
-        if (lopSelect) {
-            lopSelect.innerHTML = '<option value="">-- Chọn Lớp --</option>';
-            lopOptions.forEach(lop => {
-                const option = document.createElement('option');
-                option.value = lop.maClass;
-                option.textContent = lop.tenClass;
-                lopSelect.appendChild(option);
-            });
-        }
-    }
-
-    // Hàm render (hiển thị) bảng sinh viên
-    function renderStudentTable(data = studentData) {
-        console.log("Đang render bảng sinh viên với dữ liệu:", data);
-        const tbody = document.querySelector('#studentTable tbody');
+    // Hiển thị bảng
+    function renderSubjectTable(data = subjectData) {
+        const tbody = document.querySelector('#subjectTable tbody');
         if (!tbody) {
-            console.error("Không tìm thấy tbody của bảng sinh viên.");
+            console.error("Không tìm thấy tbody của bảng môn học");
             return;
         }
 
-        tbody.innerHTML = ''; // Xóa các hàng cũ
-
+        tbody.innerHTML = '';
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="11" style="text-align: center;">Không tìm thấy kết quả phù hợp</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không có môn học nào</td></tr>`;
             return;
         }
 
-        data.forEach((sinhVien) => {
-            const originalIndex = studentData.findIndex(sv => sv.maSV === sinhVien.maSV); // Tìm index gốc
+        data.forEach((mh, index) => {
             const row = document.createElement('tr');
-
-            // Hiển thị ảnh hoặc ảnh placeholder nếu không có
-            const imgSrc = sinhVien.anhSV && sinhVien.anhSV !== '' ? sinhVien.anhSV : '../img/OIP.jpg'; // Thay 'placeholder.png' bằng ảnh mặc định của bạn
-
             row.innerHTML = `
-                <td>${sinhVien.maSV}</td>
-                <td>${sinhVien.tenSV}</td>
-                <td>${sinhVien.ngaySinh}</td>
-                <td>${sinhVien.gioiTinh}</td>
-                <td>${sinhVien.khoaSV}</td>
-                <td>${sinhVien.lopSV}</td>
-                <td>${sinhVien.emailSV}</td>
-                <td>${sinhVien.sdtSV}</td>
-                <td>${sinhVien.diaChiSV}</td>
-                <td><img src="${imgSrc}" alt="Ảnh SV" class="student-avatar"></td>
+                <td>${mh.maMonHoc}</td>
+                <td>${mh.tenMonHoc}</td>
+                <td>${mh.soTinChi}</td>
                 <td>
-                    <button class="action-btn btn-edit" data-index="${originalIndex}" onclick="openStudentModal(true, ${originalIndex})">
-                        <i class="bx bx-edit"></i> Sửa
+                    <button class="action-btn btn-edit" onclick="openSubjectModal(true, ${index})">
+                        <i class='bx bx-edit'></i> Sửa
                     </button>
-                    <button class="action-btn btn-delete" data-index="${originalIndex}" onclick="deleteStudent(${originalIndex})">
-                        <i class="bx bx-trash-alt"></i> Xóa
+                    <button class="action-btn btn-delete" onclick="deleteSubject(${index})">
+                        <i class='bx bx-trash-alt'></i> Xóa
                     </button>
                 </td>
             `;
@@ -662,195 +905,140 @@ function initStudentManagement() {
         });
     }
 
-    // Xử lý tìm kiếm sinh viên
-    const searchInput = document.getElementById('searchStudent');
+    // Tìm kiếm
+    const searchInput = document.getElementById('searchSubject');
     if (searchInput) {
-        console.log("Đã tìm thấy ô tìm kiếm sinh viên.");
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-            console.log("Đang tìm kiếm sinh viên với từ khóa:", searchTerm);
-
-            if (!searchTerm) {
-                renderStudentTable();
-                return;
-            }
-
-            const filteredData = studentData.filter(sv =>
-                sv.maSV.toLowerCase().includes(searchTerm) ||
-                sv.tenSV.toLowerCase().includes(searchTerm) ||
-                sv.khoaSV.toLowerCase().includes(searchTerm) ||
-                sv.lopSV.toLowerCase().includes(searchTerm) ||
-                sv.emailSV.toLowerCase().includes(searchTerm) ||
-                sv.sdtSV.toLowerCase().includes(searchTerm) ||
-                sv.diaChiSV.toLowerCase().includes(searchTerm)
+        searchInput.addEventListener('input', function () {
+            const keyword = this.value.toLowerCase().trim();
+            const filtered = subjectData.filter(mh =>
+                mh.maMonHoc.toLowerCase().includes(keyword) ||
+                mh.tenMonHoc.toLowerCase().includes(keyword) ||
+                mh.soTinChi.toString().includes(keyword)
             );
-            console.log("Kết quả tìm kiếm sinh viên:", filteredData);
-            renderStudentTable(filteredData);
-        });
-    } else {
-        console.error("Không tìm thấy phần tử #searchStudent.");
-    }
-
-    // Xử lý xem trước ảnh khi chọn file
-    const anhSVInput = document.getElementById('anhSV');
-    const imagePreview = document.querySelector('#imagePreview img');
-    if (anhSVInput && imagePreview) {
-        anhSVInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                };
-                reader.readAsDataURL(file); // Chuyển ảnh thành base64
-            } else {
-                imagePreview.src = '';
-                imagePreview.style.display = 'none';
-            }
+            renderSubjectTable(filtered);
         });
     }
 
-    // Hàm mở modal thêm/sửa sinh viên
-    window.openStudentModal = function(isEdit = false, index = -1) {
-        console.log(`Mở modal sinh viên ${isEdit ? 'sửa' : 'thêm'} với index:`, index);
-        const modal = document.getElementById('studentModal');
+    // Mở modal
+    window.openSubjectModal = function (isEdit = false, index = -1) {
+        const modal = document.getElementById('subjectModal');
         if (!modal) {
-            console.error("Không tìm thấy modal sinh viên.");
+            console.error("Không tìm thấy modal môn học");
             return;
         }
 
-        document.getElementById('studentModalTitle').textContent = isEdit ? 'Sửa Sinh viên' : 'Thêm Sinh viên';
-        populateSelects(); // Điền lại dropdown khoa/lớp mỗi khi mở modal
+        const title = document.getElementById('subjectModalTitle');
+        const form = document.getElementById('subjectForm');
+        const maSubjectInput = document.getElementById('maSubject');
 
-        const anhSVInput = document.getElementById('anhSV');
-        const imagePreview = document.querySelector('#imagePreview img');
-        const currentStudentImage = document.getElementById('currentStudentImage');
-
-        if (isEdit && index >= 0 && index < studentData.length) {
-            const sv = studentData[index];
-            document.getElementById('maSV').value = sv.maSV;
-            document.getElementById('tenSV').value = sv.tenSV;
-            document.getElementById('ngaySinh').value = sv.ngaySinh;
-            document.querySelector(`input[name="gioiTinh"][value="${sv.gioiTinh}"]`).checked = true;
-            document.getElementById('khoaSV').value = sv.khoaSV;
-            document.getElementById('lopSV').value = sv.lopSV;
-            document.getElementById('emailSV').value = sv.emailSV;
-            document.getElementById('sdtSV').value = sv.sdtSV;
-            document.getElementById('diaChiSV').value = sv.diaChiSV;
-            document.getElementById('editingStudentRowIndex').value = index;
-
-            // Hiển thị ảnh hiện có
-            if (sv.anhSV) {
-                imagePreview.src = sv.anhSV;
-                imagePreview.style.display = 'block';
-                currentStudentImage.value = sv.anhSV; // Lưu ảnh hiện tại
-            } else {
-                imagePreview.src = '';
-                imagePreview.style.display = 'none';
-                currentStudentImage.value = '';
-            }
+        if (isEdit && subjectData[index]) {
+            const mh = subjectData[index];
+            maSubjectInput.value = mh.maMonHoc;
+            maSubjectInput.readOnly = true;
+            document.getElementById('tenSubject').value = mh.tenMonHoc;
+            document.getElementById('soTinChi').value = mh.soTinChi;
+            document.getElementById('editingSubjectRowIndex').value = index;
+            title.textContent = 'Sửa Môn học';
         } else {
-            // Reset form nếu là chế độ thêm mới
-            document.getElementById('studentForm').reset();
-            document.getElementById('editingStudentRowIndex').value = '';
-            imagePreview.src = '';
-            imagePreview.style.display = 'none';
-            currentStudentImage.value = '';
+            form.reset();
+            maSubjectInput.readOnly = false;
+            document.getElementById('editingSubjectRowIndex').value = '';
+            title.textContent = 'Thêm Môn học';
         }
 
-        modal.style.display = 'flex'; // Hiển thị modal
+        modal.style.display = 'flex';
     };
 
-    // Hàm đóng modal sinh viên
-    window.closeStudentModal = function() {
-        const modal = document.getElementById('studentModal');
-        if (modal) modal.style.display = 'none';
-        // Reset preview ảnh khi đóng modal
-        document.querySelector('#imagePreview img').src = '';
-        document.querySelector('#imagePreview img').style.display = 'none';
+    // Đóng modal
+    window.closeSubjectModal = function () {
+        const modal = document.getElementById('subjectModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.getElementById('subjectForm').reset();
+        }
     };
 
-    // Đóng modal khi click ra ngoài nội dung modal
-    document.getElementById('studentModal')?.addEventListener('click', function(e) {
+    // Đóng modal khi click bên ngoài
+    document.getElementById('subjectModal')?.addEventListener('click', function(e) {
         if (e.target === this) {
-            closeStudentModal();
+            closeSubjectModal();
         }
     });
 
-    // Hàm xóa sinh viên
-    window.deleteStudent = function(index) {
-        console.log("Click xóa sinh viên có index:", index);
-        if (confirm("Bạn có chắc muốn xóa sinh viên này?")) {
-            studentData.splice(index, 1); // Xóa phần tử tại index
-            saveStudentData(); // Lưu lại dữ liệu
-            renderStudentTable(); // Render lại bảng
+    // Xoá
+    window.deleteSubject = function (index) {
+        if (confirm("Bạn có chắc muốn xóa môn học này?")) {
+            subjectData.splice(index, 1);
+            saveSubjectData();
+            renderSubjectTable();
         }
     };
 
-    // Xử lý submit form thêm/sửa sinh viên
-    const form = document.getElementById('studentForm');
+    // Sự kiện submit form
+    const form = document.getElementById('subjectForm');
     if (form) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault(); // Ngăn chặn form submit mặc định
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            console.log("Form submit được kích hoạt");
 
-            const maSV = document.getElementById('maSV').value.trim();
-            const tenSV = document.getElementById('tenSV').value.trim();
-            const ngaySinh = document.getElementById('ngaySinh').value;
-            const gioiTinh = document.querySelector('input[name="gioiTinh"]:checked')?.value || '';
-            const khoaSV = document.getElementById('khoaSV').value;
-            const lopSV = document.getElementById('lopSV').value;
-            const emailSV = document.getElementById('emailSV').value.trim();
-            const sdtSV = document.getElementById('sdtSV').value.trim();
-            const diaChiSV = document.getElementById('diaChiSV').value.trim();
-            const anhSVInput = document.getElementById('anhSV');
-            const editingStudentRowIndex = document.getElementById('editingStudentRowIndex').value;
-            const currentStudentImage = document.getElementById('currentStudentImage').value; // Ảnh đang có (base64)
+            const maMonHoc = document.getElementById('maSubject').value.trim();
+            const tenMonHoc = document.getElementById('tenSubject').value.trim();
+            const soTinChi = parseInt(document.getElementById('soTinChi').value);
+            const editingIndex = document.getElementById('editingSubjectRowIndex').value;
 
-            console.log(`Submit form SV: ${maSV}, ${tenSV}, index: ${editingStudentRowIndex}`);
+            console.log("Dữ liệu form:", {maMonHoc, tenMonHoc, soTinChi, editingIndex});
 
-            if (!maSV || !tenSV || !ngaySinh || !gioiTinh || !khoaSV || !lopSV || !emailSV || !sdtSV || !diaChiSV) {
-                alert('Vui lòng nhập đầy đủ thông tin và chọn Khoa/Lớp.');
+            // Kiểm tra dữ liệu
+            if (!maMonHoc || !tenMonHoc || isNaN(soTinChi)) {
+                alert("Vui lòng điền đầy đủ thông tin.");
+                return;
+            }
+            
+            if (soTinChi < 1 || soTinChi > 10) {
+                alert("Số tín chỉ phải từ 1 đến 10.");
                 return;
             }
 
-            let newImageBase64 = currentStudentImage; // Mặc định giữ ảnh cũ
-            if (anhSVInput.files.length > 0) {
-                // Nếu có file ảnh mới được chọn, đọc nó
-                newImageBase64 = await new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (event) => resolve(event.target.result);
-                    reader.readAsDataURL(anhSVInput.files[0]);
-                });
-            }
-
-
-            // Kiểm tra mã sinh viên trùng lặp khi thêm mới
-            if (editingStudentRowIndex === '' && studentData.some(sv => sv.maSV === maSV)) {
-                alert('Mã sinh viên đã tồn tại.');
-                return;
-            }
-
-            const newStudent = {
-                maSV, tenSV, ngaySinh, gioiTinh, khoaSV, lopSV, emailSV, sdtSV, diaChiSV, anhSV: newImageBase64
+            const newSubject = { 
+                maMonHoc: maMonHoc, 
+                tenMonHoc: tenMonHoc, 
+                soTinChi: soTinChi 
             };
 
-            if (editingStudentRowIndex !== '') {
-                // Chế độ sửa: cập nhật dữ liệu tại index
-                studentData[editingStudentRowIndex] = newStudent;
+            if (editingIndex === '') {
+                // Thêm mới - kiểm tra trùng mã môn học
+                if (subjectData.some(mh => mh.maMonHoc === maMonHoc)) {
+                    alert("Mã môn học đã tồn tại.");
+                    return;
+                }
+                subjectData.push(newSubject);
             } else {
-                // Chế độ thêm mới: thêm vào cuối mảng
-                studentData.push(newStudent);
+                // Sửa
+                const index = parseInt(editingIndex);
+                if (!isNaN(index) && index >= 0 && index < subjectData.length) {
+                    subjectData[index] = newSubject;
+                }
             }
 
-            saveStudentData(); // Lưu dữ liệu mới
-            renderStudentTable(); // Render lại bảng
-            closeStudentModal(); // Đóng modal
+            saveSubjectData();
+            renderSubjectTable();
+            closeSubjectModal();
         });
-    } else {
-        console.error("Không tìm thấy form sinh viên.");
     }
 
-    // Khởi tạo ban đầu: Render bảng sinh viên khi hàm được gọi
-    renderStudentTable();
+    // Gọi khởi tạo bảng
+    renderSubjectTable();
 }
+
+// Gọi khi trang đã tải
+document.addEventListener('DOMContentLoaded', function () {
+    initSubjectManagement();
+
+    // Thêm sự kiện cho nút thêm mới
+    const btnAdd = document.querySelector('.btn-add');
+    if (btnAdd) {
+        btnAdd.addEventListener('click', function() {
+            openSubjectModal(false);
+        });
+    }
+});
