@@ -875,3 +875,135 @@ body {
     color: #e74c3c;
     font-weight: bold;
 }
+
+/* Quản lý Điểm Danh */
+.attendance-management {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+    padding: 25px;
+    margin-bottom: 30px;
+    margin-left: 250px;
+    width: calc(100% - 270px);
+    transition: margin-left 0.3s;
+    overflow-x: auto;
+}
+
+.attendance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.date-filter, .class-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.status-options label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+
+/* Trạng thái điểm danh trong bảng */
+.attendance-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: normal;
+    text-align: center;
+}
+
+/* Căn giữa textarea ghi chú */
+#attendanceNote {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    resize: vertical;
+    min-height: 80px;
+    text-align: center; /* Căn giữa theo chiều ngang */
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center;
+}
+
+/* Đảm bảo placeholder cũng được căn giữa */
+#attendanceNote::placeholder {
+    text-align: center;
+    line-height: 80px; /* Cân bằng với chiều cao */
+}
+
+/* Style cho dropdown sinh viên */
+#attendanceNote {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    resize: none; /* Thêm dòng này để tắt chức năng resize */
+    min-height: 80px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Highlight khi có lỗi */
+.select-error {
+    border-color: #e74c3c !important;
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+.suggestions-dropdown {
+    position: absolute;
+    background: white;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 1000;
+    display: none;
+}
+
+.suggestions-dropdown div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestions-dropdown div:hover {
+    background-color: #f8f9fa;
+}
+
+.form-group {
+    position: relative; /* Thêm dòng này để dropdown định vị đúng */
+}

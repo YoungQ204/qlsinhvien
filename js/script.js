@@ -1053,9 +1053,14 @@ function loadContent(page) {
                     initClassManagement();
                 } else if (page === 'sinhvien.html') {
                     initStudentManagement();
-                } else if (page === 'quanlymonhoc.html') { // THÊM DÒNG NÀY
-                    initSubjectManagement(); // Gọi hàm khởi tạo quản lý môn học
+                } else if (page === 'quanlymonhoc.html') {
+                    initSubjectManagement();
+                }else if (page === 'quanlydiem.html') {
+                    initScoreManagement();
+                }else if (page === 'diemdanh.html') {
+                    initAttendanceManagement();
                 }
+                
             }
         })
         .catch(err => {
@@ -1078,7 +1083,7 @@ function initScoreManagement() {
             tenSV: 'Nguyễn Thế Hiển', 
             maMH: 'MATH101', 
             tenMH: 'Toán giải tích', 
-            diemQT: 8.5, 
+            diemGK: 8.5, 
             diemThi: 7.5 
         },
         { 
@@ -1086,7 +1091,7 @@ function initScoreManagement() {
             tenSV: 'Tạ Hữu Quân', 
             maMH: 'XSTK101', 
             tenMH: 'Xác suất thống kê', 
-            diemQT: 7.0, 
+            diemGK: 7.0, 
             diemThi: 8.0 
         }
     ];
@@ -1105,35 +1110,35 @@ function initScoreManagement() {
     }
 
     // Hàm điền dữ liệu sinh viên và môn học vào dropdown
-    function populateSelects() {
-        const studentData = JSON.parse(localStorage.getItem('studentData')) || [];
-        const subjectData = JSON.parse(localStorage.getItem('subjectData')) || [];
-        
-        const studentSelect = document.getElementById('maSVScore');
-        const subjectSelect = document.getElementById('maMHScore');
+function populateSelects() {
+    const studentData = JSON.parse(localStorage.getItem('studentData')) || [];
+    const subjectData = JSON.parse(localStorage.getItem('subjectData')) || [];
+    
+    const studentSelect = document.getElementById('maSVScore');
+    const subjectSelect = document.getElementById('maMHScore');
 
-        // Xóa các option cũ
-        studentSelect.innerHTML = '<option value="">-- Chọn Sinh viên --</option>';
-        subjectSelect.innerHTML = '<option value="">-- Chọn Môn học --</option>';
+    // Xóa các option cũ
+    studentSelect.innerHTML = '<option value="">-- Chọn Sinh viên --</option>';
+    subjectSelect.innerHTML = '<option value="">-- Chọn Môn học --</option>';
 
-        // Thêm sinh viên vào dropdown
-        studentData.forEach(student => {
-            const option = document.createElement('option');
-            option.value = student.maSV;
-            option.textContent = `${student.maSV} - ${student.tenSV}`;
-            option.setAttribute('data-name', student.tenSV);
-            studentSelect.appendChild(option);
-        });
+    // Thêm sinh viên vào dropdown
+    studentData.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.maSV;
+        option.textContent = `${student.maSV} - ${student.tenSV}`;
+        option.setAttribute('data-name', student.tenSV);
+        studentSelect.appendChild(option);
+    });
 
-        // Thêm môn học vào dropdown
-        subjectData.forEach(subject => {
-            const option = document.createElement('option');
-            option.value = subject.maMonHoc;
-            option.textContent = `${subject.maMonHoc} - ${subject.tenMonHoc}`;
-            option.setAttribute('data-name', subject.tenMonHoc);
-            subjectSelect.appendChild(option);
-        });
-    }
+    // Thêm môn học vào dropdown
+    subjectData.forEach(subject => {
+        const option = document.createElement('option');
+        option.value = subject.maMonHoc;
+        option.textContent = `${subject.maMonHoc} - ${subject.tenMonHoc}`;
+        option.setAttribute('data-name', subject.tenMonHoc);
+        subjectSelect.appendChild(option);
+    });
+}
 
     // Hàm render (hiển thị) bảng điểm
     function renderScoreTable(data = scoreData) {
@@ -1152,7 +1157,7 @@ function initScoreManagement() {
         }
 
         data.forEach((score, index) => {
-            const { diemTK, xepLoai } = calculateFinalScore(score.diemQGK, score.diemThi);
+            const { diemTK, xepLoai } = calculateFinalScore(score.diemGK, score.diemThi);
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${score.maSV}</td>
@@ -1243,7 +1248,7 @@ function initScoreManagement() {
             const tenSV = document.querySelector('#maSVScore option:checked').getAttribute('data-name');
             const maMH = document.getElementById('maMHScore').value;
             const tenMH = document.querySelector('#maMHScore option:checked').getAttribute('data-name');
-            const diemGK = parseFloat(document.getElementById('diemQT').value);
+            const diemGK = parseFloat(document.getElementById('diemGK').value);
             const diemThi = parseFloat(document.getElementById('diemThi').value);
             const index = document.getElementById('editingScoreRowIndex').value;
 
@@ -1252,13 +1257,13 @@ function initScoreManagement() {
                 return;
             }
 
-            if (diemQT < 0 || diemGK > 10 || diemThi < 0 || diemThi > 10) {
+            if (diemGK < 0 || diemGK > 10 || diemThi < 0 || diemThi > 10) {
                 alert('Điểm phải từ 0 đến 10.');
                 return;
             }
 
             const newScore = {
-                maSV, tenSV, maMH, tenMH, diemgk, diemThi
+                maSV, tenSV, maMH, tenMH, diemGK, diemThi
             };
 
             if (index !== '') {
@@ -1291,6 +1296,279 @@ function initScoreManagement() {
     renderScoreTable();
 }
 
+// --- Quản lý Điểm Danh ---
+function initAttendanceManagement() {
+    console.log("Đang khởi tạo quản lý điểm danh...");
+
+    // Khởi tạo dữ liệu điểm danh
+    let attendanceData = JSON.parse(localStorage.getItem('attendanceData')) || [];
+    let classData = JSON.parse(localStorage.getItem('classData')) || [];
+    let studentData = JSON.parse(localStorage.getItem('studentData')) || [];
+
+    // Hàm lưu dữ liệu
+    function saveAttendanceData() {
+        localStorage.setItem('attendanceData', JSON.stringify(attendanceData));
+    }
+
+    // Hàm điền select lớp
+    function populateClassSelect(selectElement) {
+        selectElement.innerHTML = '<option value="">-- Chọn Lớp --</option>';
+        classData.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.maClass;
+            option.textContent = cls.tenClass;
+            selectElement.appendChild(option);
+        });
+    }
+
+    // Hàm điền select sinh viên theo lớp
+        document.getElementById('attendanceStudent').addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        const classId = document.getElementById('attendanceClass').value;
+        const suggestions = document.getElementById('studentSuggestions');
+        
+        suggestions.innerHTML = '';
+        
+        if (!searchTerm || !classId) {
+            suggestions.style.display = 'none';
+            return;
+        }
+        
+        const studentData = JSON.parse(localStorage.getItem('studentData')) || [];
+        const filteredStudents = studentData.filter(student => 
+            student.lopSV === classId && 
+            (student.tenSV.toLowerCase().includes(searchTerm) || 
+             student.maSV.toLowerCase().includes(searchTerm))
+        );
+        
+        if (filteredStudents.length === 0) {
+            const noResult = document.createElement('div');
+            noResult.textContent = 'Không tìm thấy sinh viên';
+            suggestions.appendChild(noResult);
+        } else {
+            filteredStudents.forEach(student => {
+                const option = document.createElement('div');
+                option.textContent = `${student.maSV} - ${student.tenSV}`;
+                option.setAttribute('data-id', student.maSV);
+                option.setAttribute('data-name', student.tenSV);
+                option.addEventListener('click', function() {
+                    document.getElementById('attendanceStudent').value = `${student.maSV} - ${student.tenSV}`;
+                    document.getElementById('attendanceStudent').setAttribute('data-id', student.maSV);
+                    suggestions.style.display = 'none';
+                });
+                suggestions.appendChild(option);
+            });
+        }
+        
+        suggestions.style.display = filteredStudents.length > 0 ? 'block' : 'none';
+    });
+
+        document.addEventListener('click', function(e) {
+        if (e.target.id !== 'attendanceStudent') {
+            document.getElementById('studentSuggestions').style.display = 'none';
+        }
+    });
+    
+    // Hàm hiển thị bảng điểm danh
+    function renderAttendanceTable(filterDate = '', filterClass = '') {
+        const tbody = document.querySelector('#attendanceTable tbody');
+        tbody.innerHTML = '';
+
+        let filteredData = attendanceData;
+        
+        if (filterDate) {
+            filteredData = filteredData.filter(a => a.date === filterDate);
+        }
+        
+        if (filterClass) {
+            filteredData = filteredData.filter(a => a.classId === filterClass);
+        }
+
+        if (filteredData.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align: center;">Không có dữ liệu điểm danh</td></tr>`;
+            return;
+        }
+
+        filteredData.forEach((record, index) => {
+            const student = studentData.find(s => s.maSV === record.studentId) || {};
+            const classInfo = classData.find(c => c.maClass === record.classId) || {};
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${formatDate(record.date)}</td>
+                <td>${classInfo.tenClass || record.classId}</td>
+                <td>${record.studentId}</td>
+                <td>${student.tenSV || record.studentId}</td>
+                <td class="attendance-status ${getStatusClass(record.status)}">
+                    ${getStatusText(record.status)}
+                </td>
+                <td>${record.note || ''}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-edit" onclick="openAttendanceModal(true, '${record.id}')">
+                            <i class='bx bx-edit'></i> Sửa
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteAttendanceRecord('${record.id}')">
+                            <i class='bx bx-trash-alt'></i> Xóa
+                        </button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Hàm hỗ trợ
+    function formatDate(dateString) {
+        const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('vi-VN', options);
+    }
+
+    function getStatusText(status) {
+        const statusMap = {
+            present: 'Có mặt',
+            absent: 'Vắng',
+            late: 'Đi muộn'
+        };
+        return statusMap[status] || status;
+    }
+
+    function getStatusClass(status) {
+        const classMap = {
+            present: 'status-present-badge',
+            absent: 'status-absent-badge',
+            late: 'status-late-badge'
+        };
+        return classMap[status] || '';
+    }
+
+    // Hàm mở modal điểm danh
+    window.openAttendanceModal = function(isEdit = false, recordId = '') {
+        const modal = document.getElementById('attendanceModal');
+        modal.style.display = 'flex';
+        
+        document.getElementById('attendanceModalTitle').textContent = 
+            isEdit ? 'Sửa Điểm Danh' : 'Điểm Danh Sinh Viên';
+        
+        populateClassSelect(document.getElementById('attendanceClass'));
+        document.getElementById('attendanceDate').valueAsDate = new Date();
+        
+        if (isEdit && recordId) {
+            const record = attendanceData.find(a => a.id === recordId);
+            if (record) {
+                document.getElementById('attendanceDate').value = record.date;
+                document.getElementById('attendanceClass').value = record.classId;
+                populateStudentSelect(record.classId);
+                setTimeout(() => {
+                    document.getElementById('attendanceStudent').value = record.studentId;
+                }, 100);
+                document.querySelector(`input[name="attendanceStatus"][value="${record.status}"]`).checked = true;
+                document.getElementById('attendanceNote').value = record.note || '';
+                document.getElementById('editingAttendanceId').value = recordId;
+            }
+        } else {
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('editingAttendanceId').value = '';
+        }
+    };
+
+    // Hàm đóng modal
+    window.closeAttendanceModal = function() {
+        document.getElementById('attendanceModal').style.display = 'none';
+    };
+
+    // Hàm xóa bản ghi
+    window.deleteAttendanceRecord = function(recordId) {
+        if (confirm('Bạn có chắc muốn xóa bản ghi điểm danh này?')) {
+            attendanceData = attendanceData.filter(a => a.id !== recordId);
+            saveAttendanceData();
+            renderAttendanceTable(
+                document.getElementById('filterDate').value,
+                document.getElementById('filterClass').value
+            );
+        }
+    };
+
+    // Sự kiện thay đổi lớp
+    document.getElementById('attendanceClass').addEventListener('change', function() {
+        populateStudentSelect(this.value);
+    });
+
+    // Sự kiện lọc
+    document.getElementById('filterDate').addEventListener('change', function() {
+        renderAttendanceTable(this.value, document.getElementById('filterClass').value);
+    });
+
+    document.getElementById('filterClass').addEventListener('change', function() {
+        renderAttendanceTable(document.getElementById('filterDate').value, this.value);
+    });
+
+    // Điền select lọc lớp
+    const filterClassSelect = document.getElementById('filterClass');
+    if (filterClassSelect) {
+        filterClassSelect.innerHTML = '<option value="">Tất cả lớp</option>';
+        classData.forEach(cls => {
+            const option = document.createElement('option');
+            option.value = cls.maClass;
+            option.textContent = cls.tenClass;
+            filterClassSelect.appendChild(option);
+        });
+    }
+
+    // Xử lý submit form
+    document.getElementById('attendanceForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const date = document.getElementById('attendanceDate').value;
+        const classId = document.getElementById('attendanceClass').value;
+        const studentInput = document.getElementById('attendanceStudent');
+        const studentId = studentInput.getAttribute('data-id') || studentInput.value.split(' - ')[0];
+        const studentName = studentInput.getAttribute('data-name') || studentInput.value.split(' - ')[1] || '';
+        const status = document.querySelector('input[name="attendanceStatus"]:checked').value;
+        const note = document.getElementById('attendanceNote').value;
+        const recordId = document.getElementById('editingAttendanceId').value;
+        
+        if (!date || !classId || !studentId) {
+            alert('Vui lòng nhập đầy đủ thông tin bắt buộc');
+            return;
+        }
+        
+        const newRecord = {
+            id: recordId || Date.now().toString(),
+            date,
+            classId,
+            studentId,
+            studentName,
+            status,
+            note,
+            createdAt: new Date().toISOString()
+        };
+        
+        if (recordId) {
+            // Cập nhật
+            const index = attendanceData.findIndex(a => a.id === recordId);
+            if (index !== -1) {
+                attendanceData[index] = newRecord;
+            }
+        } else {
+            // Thêm mới
+            attendanceData.push(newRecord);
+        }
+        
+        saveAttendanceData();
+        renderAttendanceTable(
+            document.getElementById('filterDate').value,
+            document.getElementById('filterClass').value
+        );
+        closeAttendanceModal();
+    });
+
+    // Khởi tạo ban đầu
+    renderAttendanceTable();
+}
+
     // --- Tải trang chủ mặc định ---
     loadContent("trangchu.html");
 });
+

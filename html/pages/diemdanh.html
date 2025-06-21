@@ -1,0 +1,91 @@
+<div class="attendance-management">
+    <div class="attendance-header">
+        <h2 style="font-weight: 600;">Quản lý Điểm danh</h2>
+        <div class="header-actions">
+            <div class="date-filter">
+                <label for="filterDate">Lọc theo ngày:</label>
+                <input type="date" id="filterDate">
+            </div>
+            <div class="class-filter">
+                <label for="filterClass">Lọc theo lớp:</label>
+                <select id="filterClass">
+                    <option value="">Tất cả lớp</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="openAttendanceModal()">
+                <i class='bx bx-plus'></i> Điểm Danh
+            </button>
+        </div>
+    </div>
+
+    <table class="data-table" id="attendanceTable">
+        <thead>
+            <tr>
+                <th>STT</th>
+                <th>Ngày</th>
+                <th>Lớp</th>
+                <th>Mã SV</th>
+                <th>Tên SV</th>
+                <th>Trạng thái</th>
+                <th>Ghi chú</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<div id="attendanceModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 id="attendanceModalTitle">Điểm Danh Sinh Viên</h3>
+            <span class="close" onclick="closeAttendanceModal()"><i class='bx bx-x'></i></span>
+        </div>
+        <form id="attendanceForm">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="attendanceDate">Ngày điểm danh</label>
+                    <input type="date" id="attendanceDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceClass">Lớp</label>
+                    <select id="attendanceClass" required>
+                        <option value="">-- Chọn Lớp --</option>
+                    </select>
+                </div>
+    <div class="form-group">
+        <label for="attendanceStudent">Tìm kiếm sinh viên</label>
+        <input type="text" id="attendanceStudent" placeholder="Nhập tên hoặc mã sinh viên" required>
+        <div id="studentSuggestions" class="suggestions-dropdown"></div>
+    </div>
+                <div class="form-group">
+                    <label>Trạng thái</label>
+                    <div class="status-options">
+                        <label>
+                            <input type="radio" name="attendanceStatus" value="present" checked>
+                            <span class="status-present">Có mặt</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="attendanceStatus" value="absent">
+                            <span class="status-absent">Vắng</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="attendanceStatus" value="late">
+                            <span class="status-late">Đi muộn</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="attendanceNote">Ghi chú</label>
+                    <textarea id="attendanceNote" rows="3"></textarea>
+                </div>
+                <input type="hidden" id="editingAttendanceId">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" onclick="closeAttendanceModal()">Hủy</button>
+                <button type="submit" class="btn-save">Lưu</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="script.js"></script>
