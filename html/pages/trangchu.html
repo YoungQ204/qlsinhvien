@@ -4,52 +4,73 @@
   <section class="dashboard">
     <div class="card blue">
       <div class="card-body">
-        <div class="card-count">1</div>
+        <div class="card-count" id="facultyCount">0</div>
         <div class="card-title">Khoa</div>
         <div class="card-icon"><i class="bx bxs-bank"></i></div>
+      </div>
+      <div class="card-footer">
+        <span>Tổng số khoa</span>
+        <i class='bx bx-chevron-right'></i>
       </div>
     </div>
 
     <div class="card green">
       <div class="card-body">
-        <div class="card-count">2</div>
+        <div class="card-count" id="classCount">0</div>
         <div class="card-title">Lớp</div>
         <div class="card-icon"><i class="bx bx-table"></i></div>
+      </div>
+      <div class="card-footer">
+        <span>Tổng số lớp</span>
+        <i class='bx bx-chevron-right'></i>
       </div>
     </div>
 
     <div class="card orange">
       <div class="card-body">
-        <div class="card-count">3</div>
+        <div class="card-count" id="studentCount">0</div>
         <div class="card-title">Sinh viên</div>
         <div class="card-icon"><i class="bx bxs-user"></i></div>
+      </div>
+      <div class="card-footer">
+        <span>Tổng số sinh viên</span>
+        <i class='bx bx-chevron-right'></i>
       </div>
     </div>
 
     <div class="card red">
       <div class="card-body">
-        <div class="card-count">4</div>
+        <div class="card-count" id="subjectCount">0</div>
         <div class="card-title">Môn học</div>
         <div class="card-icon"><i class="bx bxs-folder-open"></i></div>
+      </div>
+      <div class="card-footer">
+        <span>Tổng số môn học</span>
+        <i class='bx bx-chevron-right'></i>
       </div>
     </div>
   </section>
 
   <section class="charts-section">
     <div class="chart-container">
+      <h2>Thống kê sinh viên theo khoa</h2>
       <canvas id="studentGenderChart"></canvas>
     </div>
     <div class="chart-container">
+      <h2>Thống kê giáo viên theo khoa</h2>
       <canvas id="teacherGenderChart"></canvas>
     </div>
   </section>
   
-<section class="notifications">
-  <h2>Thông báo</h2>
-  <ul class="notification-list" id="notificationList"></ul>
-</section>
+  <section class="notifications">
+    <h2><i class='bx bx-bell'></i> Thông báo mới nhất</h2>
+    <ul class="notification-list" id="notificationList"></ul>
+    <a href="#" class="view-all">Xem chi tiết <i class='bx bx-chevron-right'></i></a>
+  </section>
 
-<section class="calendar">
-  <h2>Sự kiện sắp tới</h2>
-  <ul class="event-list" id="eventList"></ul>
-</section>
+  <section class="calendar">
+    <h2><i class='bx bx-calendar-event'></i> Sự kiện sắp tới</h2>
+    <ul class="event-list" id="eventList"></ul>
+    <a href="#" class="view-all">Xem chi tiết <i class='bx bx-chevron-right'></i></a>
+  </section>
+</div>

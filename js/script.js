@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 content.innerHTML = "<p>Lỗi khi tải nội dung.</p>";
             }
         });
-}
+    }
 
     // Gắn sự kiện click cho các mục menu trong sidebar
     const menuItems = document.querySelectorAll(".menu-item");
@@ -221,12 +221,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Vẫn tải nội dung trang chủ nếu không có Chart.js, nhưng biểu đồ sẽ không hoạt động
         loadContent("trangchu.html");
     }
-});
 
-
-// --- Quản lý Khoa ---
-function initKhoaManagement() {
-    console.log("Đang khởi tạo quản lý khoa...");
+    // --- Quản lý Khoa ---
+    function initKhoaManagement() {
+        console.log("Đang khởi tạo quản lý khoa...");
 
     // Khởi tạo dữ liệu khoa từ localStorage hoặc dữ liệu mẫu
     let khoaData = JSON.parse(localStorage.getItem('khoaData')) || [
@@ -390,20 +388,20 @@ function initKhoaManagement() {
 
     // Khởi tạo ban đầu: Render bảng khoa khi hàm được gọi
     renderKhoaTable();
-}
+    }
 
 
-// --- Quản lý Lớp ---
-function initClassManagement() {
-    console.log("Đang khởi tạo quản lý lớp...");
+    // --- Quản lý Lớp ---
+    function initClassManagement() {
+        console.log("Đang khởi tạo quản lý lớp...");
 
-    // Khởi tạo dữ liệu lớp từ localStorage hoặc dữ liệu mẫu
-    // Sử dụng 'classData' làm khóa lưu trữ riêng cho lớp
-    let classData = JSON.parse(localStorage.getItem('classData')) || [
-        { maClass: 'CNTT1', tenClass: 'Công nghệ thông tin 1' },
-        { maClass: 'HTTT2', tenClass: 'Hệ thống thông tin 2' },
-        { maClass: 'KHMT3', tenClass: 'Khoa học máy tính 3' }
-    ];
+        // Khởi tạo dữ liệu lớp từ localStorage hoặc dữ liệu mẫu
+        // Sử dụng 'classData' làm khóa lưu trữ riêng cho lớp
+        let classData = JSON.parse(localStorage.getItem('classData')) || [
+            { maClass: 'CNTT1', tenClass: 'Công nghệ thông tin 1' },
+            { maClass: 'HTTT2', tenClass: 'Hệ thống thông tin 2' },
+            { maClass: 'KHMT3', tenClass: 'Khoa học máy tính 3' }
+        ];
 
     // Hàm lưu dữ liệu lớp vào localStorage
     function saveClassData() {
@@ -560,7 +558,7 @@ function initClassManagement() {
 
     // Khởi tạo ban đầu: Render bảng lớp khi hàm được gọi
     renderClassTable();
-}
+    }
 
     // --- Quản lý Sinh viên ---
     function initStudentManagement() {
@@ -854,35 +852,36 @@ function initClassManagement() {
         // Khởi tạo ban đầu: Render bảng sinh viên khi hàm được gọi
         renderStudentTable();   
     }
-    
-//Quản lý môn học
-function initSubjectManagement() {
-    console.log("Khởi tạo quản lý môn học...");
 
-    // Dữ liệu mẫu ban đầu
+// --- Quản lý Môn học ---
+function initSubjectManagement() {
+    console.log("Đang khởi tạo quản lý môn học...");
+
+    // Khởi tạo dữ liệu môn học từ localStorage hoặc dữ liệu mẫu
     let subjectData = JSON.parse(localStorage.getItem('subjectData')) || [
-        { maMonHoc: 'MATH101', tenMonHoc: 'Toán cao cấp', soTinChi: 3 },
-        { maMonHoc: 'PHYS101', tenMonHoc: 'Vật lý đại cương', soTinChi: 4 },
-        { maMonHoc: 'PROG101', tenMonHoc: 'Lập trình cơ bản', soTinChi: 3 }
+        { maMonHoc: 'MATH101', tenMonHoc: 'Toán giải tích', soTinChi: 3 },
+        { maMonHoc: 'XSTK101', tenMonHoc: 'Xác suất thống kê', soTinChi: 4 }
     ];
 
-    // Lưu vào localStorage
+    // Hàm lưu dữ liệu môn học vào localStorage
     function saveSubjectData() {
         localStorage.setItem('subjectData', JSON.stringify(subjectData));
-        console.log("Đã lưu dữ liệu môn học");
+        console.log("Đã lưu dữ liệu môn học.");
     }
 
-    // Hiển thị bảng
+    // Hàm render (hiển thị) bảng môn học
     function renderSubjectTable(data = subjectData) {
+        console.log("Đang render bảng môn học với dữ liệu:", data);
         const tbody = document.querySelector('#subjectTable tbody');
         if (!tbody) {
-            console.error("Không tìm thấy tbody của bảng môn học");
+            console.error("Không tìm thấy tbody của bảng môn học.");
             return;
         }
 
-        tbody.innerHTML = '';
+        tbody.innerHTML = ''; // Xóa các hàng cũ
+
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;">Không có môn học nào</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Không có môn học nào</td></tr>`;
             return;
         }
 
@@ -905,68 +904,64 @@ function initSubjectManagement() {
         });
     }
 
-    // Tìm kiếm
+    // Xử lý tìm kiếm môn học
     const searchInput = document.getElementById('searchSubject');
     if (searchInput) {
-        searchInput.addEventListener('input', function () {
-            const keyword = this.value.toLowerCase().trim();
-            const filtered = subjectData.filter(mh =>
-                mh.maMonHoc.toLowerCase().includes(keyword) ||
-                mh.tenMonHoc.toLowerCase().includes(keyword) ||
-                mh.soTinChi.toString().includes(keyword)
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const filteredData = subjectData.filter(mh =>
+                mh.maMonHoc.toLowerCase().includes(searchTerm) ||
+                mh.tenMonHoc.toLowerCase().includes(searchTerm)
             );
-            renderSubjectTable(filtered);
+            renderSubjectTable(filteredData);
         });
     }
 
-    // Mở modal
-    window.openSubjectModal = function (isEdit = false, index = -1) {
+    // Hàm mở modal thêm/sửa môn học (gắn vào window để có thể gọi từ HTML)
+    window.openSubjectModal = function(isEdit = false, index = -1) {
+        console.log(`Mở modal môn học ${isEdit ? 'sửa' : 'thêm'} với index:`, index);
         const modal = document.getElementById('subjectModal');
         if (!modal) {
-            console.error("Không tìm thấy modal môn học");
+            console.error("Không tìm thấy modal môn học.");
             return;
         }
 
-        const title = document.getElementById('subjectModalTitle');
-        const form = document.getElementById('subjectForm');
-        const maSubjectInput = document.getElementById('maSubject');
+        // Đặt tiêu đề modal
+        document.getElementById('subjectModalTitle').textContent = isEdit ? 'Sửa Môn học' : 'Thêm Môn học';
 
-        if (isEdit && subjectData[index]) {
+        // Nếu là chế độ sửa, điền dữ liệu vào form
+        if (isEdit && index >= 0 && index < subjectData.length) {
             const mh = subjectData[index];
-            maSubjectInput.value = mh.maMonHoc;
-            maSubjectInput.readOnly = true;
+            document.getElementById('maSubject').value = mh.maMonHoc;
             document.getElementById('tenSubject').value = mh.tenMonHoc;
             document.getElementById('soTinChi').value = mh.soTinChi;
             document.getElementById('editingSubjectRowIndex').value = index;
-            title.textContent = 'Sửa Môn học';
+            
+            // Khóa trường mã môn học khi sửa
+            document.getElementById('maSubject').readOnly = true;
         } else {
-            form.reset();
-            maSubjectInput.readOnly = false;
+            // Reset form và mở khóa trường mã môn học khi thêm mới
+            document.getElementById('subjectForm').reset();
             document.getElementById('editingSubjectRowIndex').value = '';
-            title.textContent = 'Thêm Môn học';
+            document.getElementById('maSubject').readOnly = false;
         }
 
+        // Hiển thị modal
         modal.style.display = 'flex';
     };
 
-    // Đóng modal
-    window.closeSubjectModal = function () {
+    // Hàm đóng modal môn học (gắn vào window)
+    window.closeSubjectModal = function() {
         const modal = document.getElementById('subjectModal');
         if (modal) {
             modal.style.display = 'none';
+            // Reset form khi đóng modal
             document.getElementById('subjectForm').reset();
         }
     };
 
-    // Đóng modal khi click bên ngoài
-    document.getElementById('subjectModal')?.addEventListener('click', function(e) {
-        if (e.target === this) {
-            closeSubjectModal();
-        }
-    });
-
-    // Xoá
-    window.deleteSubject = function (index) {
+    // Hàm xóa môn học (gắn vào window)
+    window.deleteSubject = function(index) {
         if (confirm("Bạn có chắc muốn xóa môn học này?")) {
             subjectData.splice(index, 1);
             saveSubjectData();
@@ -974,71 +969,328 @@ function initSubjectManagement() {
         }
     };
 
-    // Sự kiện submit form
+    // Xử lý submit form thêm/sửa môn học
     const form = document.getElementById('subjectForm');
     if (form) {
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            console.log("Form submit được kích hoạt");
 
+            // Lấy giá trị từ form
             const maMonHoc = document.getElementById('maSubject').value.trim();
             const tenMonHoc = document.getElementById('tenSubject').value.trim();
             const soTinChi = parseInt(document.getElementById('soTinChi').value);
-            const editingIndex = document.getElementById('editingSubjectRowIndex').value;
+            const index = document.getElementById('editingSubjectRowIndex').value;
 
-            console.log("Dữ liệu form:", {maMonHoc, tenMonHoc, soTinChi, editingIndex});
-
-            // Kiểm tra dữ liệu
+            // Validate dữ liệu
             if (!maMonHoc || !tenMonHoc || isNaN(soTinChi)) {
-                alert("Vui lòng điền đầy đủ thông tin.");
-                return;
-            }
-            
-            if (soTinChi < 1 || soTinChi > 10) {
-                alert("Số tín chỉ phải từ 1 đến 10.");
+                alert('Vui lòng nhập đầy đủ thông tin.');
                 return;
             }
 
-            const newSubject = { 
-                maMonHoc: maMonHoc, 
-                tenMonHoc: tenMonHoc, 
-                soTinChi: soTinChi 
+            if (soTinChi < 1 || soTinChi > 10) {
+                alert('Số tín chỉ phải từ 1 đến 10.');
+                return;
+            }
+
+            // Tạo object môn học mới
+            const newSubject = {
+                maMonHoc: maMonHoc,
+                tenMonHoc: tenMonHoc,
+                soTinChi: soTinChi
             };
 
-            if (editingIndex === '') {
-                // Thêm mới - kiểm tra trùng mã môn học
+            if (index !== '') {
+                // Chế độ sửa: cập nhật dữ liệu
+                subjectData[index] = newSubject;
+            } else {
+                // Chế độ thêm mới: kiểm tra trùng mã
                 if (subjectData.some(mh => mh.maMonHoc === maMonHoc)) {
-                    alert("Mã môn học đã tồn tại.");
+                    alert('Mã môn học đã tồn tại.');
                     return;
                 }
+                // Thêm môn học mới
                 subjectData.push(newSubject);
-            } else {
-                // Sửa
-                const index = parseInt(editingIndex);
-                if (!isNaN(index) && index >= 0 && index < subjectData.length) {
-                    subjectData[index] = newSubject;
-                }
             }
 
+            // Lưu dữ liệu và cập nhật giao diện
             saveSubjectData();
             renderSubjectTable();
             closeSubjectModal();
         });
     }
 
-    // Gọi khởi tạo bảng
+    // Đóng modal khi click ra ngoài nội dung modal
+    document.getElementById('subjectModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeSubjectModal();
+        }
+    });
+
+    // Khởi tạo ban đầu: hiển thị danh sách môn học
     renderSubjectTable();
 }
 
-// Gọi khi trang đã tải
-document.addEventListener('DOMContentLoaded', function () {
-    initSubjectManagement();
+// Thêm điều kiện gọi hàm initSubjectManagement trong hàm loadContent
+function loadContent(page) {
+    fetch(`pages/${page}`)
+        .then(res => {
+            if (!res.ok) throw new Error("Không thể tải nội dung.");
+            return res.text();
+        })
+        .then(html => {
+            const content = document.getElementById('content-area');
+            if (content) {
+                content.innerHTML = html;
 
-    // Thêm sự kiện cho nút thêm mới
-    const btnAdd = document.querySelector('.btn-add');
-    if (btnAdd) {
-        btnAdd.addEventListener('click', function() {
-            openSubjectModal(false);
+                if (page === 'trangchu.html') {
+                    loadNotificationsAndEvents();
+                    if (typeof Chart !== 'undefined') {
+                        initCharts();
+                    }
+                } else if (page === 'khoa.html') {
+                    initKhoaManagement();
+                } else if (page === 'lop.html') {
+                    initClassManagement();
+                } else if (page === 'sinhvien.html') {
+                    initStudentManagement();
+                } else if (page === 'quanlymonhoc.html') { // THÊM DÒNG NÀY
+                    initSubjectManagement(); // Gọi hàm khởi tạo quản lý môn học
+                }
+            }
+        })
+        .catch(err => {
+            console.error("Lỗi khi tải nội dung:", err);
+            const content = document.getElementById('content-area');
+            if (content) {
+                content.innerHTML = "<p>Lỗi khi tải nội dung.</p>";
+            }
+        });
+}
+
+// --- Quản lý Điểm ---
+function initScoreManagement() {
+    console.log("Đang khởi tạo quản lý điểm...");
+
+    // Khởi tạo dữ liệu điểm từ localStorage hoặc dữ liệu mẫu
+    let scoreData = JSON.parse(localStorage.getItem('scoreData')) || [
+        { 
+            maSV: '671800', 
+            tenSV: 'Nguyễn Thế Hiển', 
+            maMH: 'MATH101', 
+            tenMH: 'Toán giải tích', 
+            diemQT: 8.5, 
+            diemThi: 7.5 
+        },
+        { 
+            maSV: '671801', 
+            tenSV: 'Tạ Hữu Quân', 
+            maMH: 'XSTK101', 
+            tenMH: 'Xác suất thống kê', 
+            diemQT: 7.0, 
+            diemThi: 8.0 
+        }
+    ];
+
+    // Hàm tính điểm tổng kết và xếp loại
+    function calculateFinalScore(diemGK, diemThi) {
+        const diemTK = (diemGK * 0.3) + (diemThi * 0.7);
+        const xepLoai = diemTK >= 5 ? 'Đạt' : 'Không đạt';
+        return { diemTK: diemTK.toFixed(1), xepLoai };
+    }
+
+    // Hàm lưu dữ liệu điểm vào localStorage
+    function saveScoreData() {
+        localStorage.setItem('scoreData', JSON.stringify(scoreData));
+        console.log("Đã lưu dữ liệu điểm.");
+    }
+
+    // Hàm điền dữ liệu sinh viên và môn học vào dropdown
+    function populateSelects() {
+        const studentData = JSON.parse(localStorage.getItem('studentData')) || [];
+        const subjectData = JSON.parse(localStorage.getItem('subjectData')) || [];
+        
+        const studentSelect = document.getElementById('maSVScore');
+        const subjectSelect = document.getElementById('maMHScore');
+
+        // Xóa các option cũ
+        studentSelect.innerHTML = '<option value="">-- Chọn Sinh viên --</option>';
+        subjectSelect.innerHTML = '<option value="">-- Chọn Môn học --</option>';
+
+        // Thêm sinh viên vào dropdown
+        studentData.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.maSV;
+            option.textContent = `${student.maSV} - ${student.tenSV}`;
+            option.setAttribute('data-name', student.tenSV);
+            studentSelect.appendChild(option);
+        });
+
+        // Thêm môn học vào dropdown
+        subjectData.forEach(subject => {
+            const option = document.createElement('option');
+            option.value = subject.maMonHoc;
+            option.textContent = `${subject.maMonHoc} - ${subject.tenMonHoc}`;
+            option.setAttribute('data-name', subject.tenMonHoc);
+            subjectSelect.appendChild(option);
         });
     }
+
+    // Hàm render (hiển thị) bảng điểm
+    function renderScoreTable(data = scoreData) {
+        console.log("Đang render bảng điểm với dữ liệu:", data);
+        const tbody = document.querySelector('#scoreTable tbody');
+        if (!tbody) {
+            console.error("Không tìm thấy tbody của bảng điểm.");
+            return;
+        }
+
+        tbody.innerHTML = ''; // Xóa các hàng cũ
+
+        if (data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="9" style="text-align: center;">Không có dữ liệu điểm</td></tr>`;
+            return;
+        }
+
+        data.forEach((score, index) => {
+            const { diemTK, xepLoai } = calculateFinalScore(score.diemQGK, score.diemThi);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${score.maSV}</td>
+                <td>${score.tenSV}</td>
+                <td>${score.maMH}</td>
+                <td>${score.tenMH}</td>
+                <td>${score.diemGK}</td>
+                <td>${score.diemThi}</td>
+                <td>${diemTK}</td>
+                <td class="${xepLoai === 'Đạt' ? 'pass' : 'fail'}">${xepLoai}</td>
+                <td>
+                    <button class="action-btn btn-edit" onclick="openScoreModal(true, ${index})">
+                        <i class='bx bx-edit'></i> Sửa
+                    </button>
+                    <button class="action-btn btn-delete" onclick="deleteScore(${index})">
+                        <i class='bx bx-trash-alt'></i> Xóa
+                    </button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // Xử lý tìm kiếm điểm
+    const searchInput = document.getElementById('searchScore');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase().trim();
+            const filteredData = scoreData.filter(score =>
+                score.maSV.toLowerCase().includes(searchTerm) ||
+                score.tenSV.toLowerCase().includes(searchTerm) ||
+                score.maMH.toLowerCase().includes(searchTerm) ||
+                score.tenMH.toLowerCase().includes(searchTerm)
+            );
+            renderScoreTable(filteredData);
+        });
+    }
+
+    // Hàm mở modal thêm/sửa điểm
+    window.openScoreModal = function(isEdit = false, index = -1) {
+        console.log(`Mở modal điểm ${isEdit ? 'sửa' : 'thêm'} với index:`, index);
+        const modal = document.getElementById('scoreModal');
+        if (!modal) {
+            console.error("Không tìm thấy modal điểm.");
+            return;
+        }
+
+        document.getElementById('scoreModalTitle').textContent = isEdit ? 'Sửa Điểm' : 'Thêm Điểm';
+        populateSelects(); // Điền lại dropdown sinh viên/môn học
+
+        if (isEdit && index >= 0 && index < scoreData.length) {
+            const score = scoreData[index];
+            document.getElementById('maSVScore').value = score.maSV;
+            document.getElementById('maMHScore').value = score.maMH;
+            document.getElementById('diemGK').value = score.diemQT;
+            document.getElementById('diemThi').value = score.diemThi;
+            document.getElementById('editingScoreRowIndex').value = index;
+        } else {
+            document.getElementById('scoreForm').reset();
+            document.getElementById('editingScoreRowIndex').value = '';
+        }
+
+        modal.style.display = 'flex';
+    };
+
+    // Hàm đóng modal điểm
+    window.closeScoreModal = function() {
+        const modal = document.getElementById('scoreModal');
+        if (modal) modal.style.display = 'none';
+    };
+
+    // Hàm xóa điểm
+    window.deleteScore = function(index) {
+        if (confirm("Bạn có chắc muốn xóa điểm này?")) {
+            scoreData.splice(index, 1);
+            saveScoreData();
+            renderScoreTable();
+        }
+    };
+
+    // Xử lý submit form thêm/sửa điểm
+    const form = document.getElementById('scoreForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const maSV = document.getElementById('maSVScore').value;
+            const tenSV = document.querySelector('#maSVScore option:checked').getAttribute('data-name');
+            const maMH = document.getElementById('maMHScore').value;
+            const tenMH = document.querySelector('#maMHScore option:checked').getAttribute('data-name');
+            const diemGK = parseFloat(document.getElementById('diemQT').value);
+            const diemThi = parseFloat(document.getElementById('diemThi').value);
+            const index = document.getElementById('editingScoreRowIndex').value;
+
+            if (!maSV || !maMH || isNaN(diemGK) || isNaN(diemThi)) {
+                alert('Vui lòng nhập đầy đủ thông tin.');
+                return;
+            }
+
+            if (diemQT < 0 || diemGK > 10 || diemThi < 0 || diemThi > 10) {
+                alert('Điểm phải từ 0 đến 10.');
+                return;
+            }
+
+            const newScore = {
+                maSV, tenSV, maMH, tenMH, diemgk, diemThi
+            };
+
+            if (index !== '') {
+                // Sửa điểm
+                scoreData[index] = newScore;
+            } else {
+                // Thêm điểm mới - kiểm tra trùng (mã SV + mã MH)
+                const exists = scoreData.some(s => s.maSV === maSV && s.maMH === maMH);
+                if (exists) {
+                    alert('Sinh viên đã có điểm môn học này. Vui lòng chọn sửa điểm thay vì thêm mới.');
+                    return;
+                }
+                scoreData.push(newScore);
+            }
+
+            saveScoreData();
+            renderScoreTable();
+            closeScoreModal();
+        });
+    }
+
+    // Đóng modal khi click ra ngoài nội dung modal
+    document.getElementById('scoreModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeScoreModal();
+        }
+    });
+
+    // Khởi tạo ban đầu
+    renderScoreTable();
+}
+
+    // --- Tải trang chủ mặc định ---
+    loadContent("trangchu.html");
 });
